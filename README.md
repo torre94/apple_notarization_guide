@@ -29,7 +29,7 @@ For your [Apple Developer Portal](https://developer.apple.com/) create, download
 - Developer ID Installer
 - Developer ID Application 
 
-![Create a new certificate](developer_id.png)
+![Create a new certificate](create_certificate.png)
 
 You can verify that the certificate has been successfully installed with the command:
 
