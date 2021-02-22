@@ -1,79 +1,80 @@
-# Apple notarization
+# Apple notarization guide
 
-When a user runs an app for the first time, macOS Gatekeeper check
-Quando un utente esegue un'app er la prima volta, macOS Gatekeeper si connette ai server Apple per verificare che un'app, pkg, dmg, bundle provenga da uno sviluppatore attendibile.
+When a user runs an app for the first time, [macOS Gatekeeper](https://support.apple.com/en-us/HT202491) checks if it is notarized, so if it comes from a trusted developer.
 
-![](https://www.davidebarranca.com/wp-content/uploads/2019/05/gatekeeper.gif)
+![macOS Gratekeeper](https://support.apple.com/library/content/dam/edam/applecare/images/en_US/macos/Mojave/macos-mojave-notarized-app-alert-dark.jpg)
 
-Per consentire il processo anche offline si raccomanda di associare la conferma di avvenuta notarizzazione all'app con il comando `staple`.
+To allow the process offline too, it is recommended to *staple* the notarization response to the file (see relative paragraph).
 
-La notarizzazione è necessaria per app, plugin, dmg e pkg.
-Se si intende distribuire tramite **pkg** o **dmg** (che può anche conterere pkg) basta notarizzare il pkg o dmg e tutto ciò che contiene verrà notarizzato.  
-In questo caso assicurarsi che tutti gli elementi all'interno abbiano una firma valida.
+The notarization can be requested for app, plugin or bundle, dmg and pkg.  
+If you want distribute via **pkg** or **dmg** (which can includes pkg), you can just notarize the pkg or the dmg, and everything inside will be notarized.  
+In this case make that all element inside have a with valid sign.
 
 ## Sources
 
+- https://developer.apple.com/documentation/xcode/notarizing_macos_software_before_distribution
 - https://www.davidebarranca.com/2019/04/notarizing-installers-for-macos-catalina/
 - https://www.kvraudio.com/forum/viewtopic.php?t=531663
 
-## Prerequisiti
+## Prerequisites
 
-- XCode 10 o superiore (meglio se ultima versione scaricabile dall'App Store)
-- Accesso a internet
-- Apple Developer ID (99€ all'anno)
-- [Password specifica](https://support.apple.com/it-it/HT204397)
+- XCode 10 o higher (better if the latest version, downloadable from the App Store)
+- Internet access
+- Apple Developer ID (99€/year)
+- [Specific password](https://support.apple.com/it-it/HT204397)
 
-## Ottenere un certificato
+## Obtain a certificate
 
-Dal proprio [portale Apple Developer](https://developer.apple.com/) generare, scaricare e installare un certificato. Esistono vari tipi di certificati, scegliere quello corretto tra:
+For your [Apple Developer Portal](https://developer.apple.com/) create, download and install a certificate. There are several kind of certificates, choose between:
 - Developer ID Installer
 - Developer ID Application 
 
-![](https://www.davidebarranca.com/wp-content/uploads/2019/05/DeveloperID.png)
+![Create a new certificate](developer_id.png)
 
-Verificare la corretta installazione con il comando:
+You can verify that the certificate has been successfully installed with the command:
 
 > security find-identity -v
 
-## Firma
+## Signing
 
-Affinchè la notarizzazione vada a buon fine, tutti gli elementi devono avere una firma valida.
+For the notarization to be successful, all elements must have a valid developer signature.
 
-### Firmare un'app tramite XCode
+### Signing an app through XCode
 
-- Aggiungere un account da sviluppatore nelle impostazioni.
-- Nelle impostazioni del progetto selezionare il proprio account sviluppatore e il certificato.
+1. Open XCode preferences and add your developer account;
+2. In your project setting select your developer account and the right certificate;
+3. Build your app.
 
-### Firmare un'app fuori da XCode
+### Signing an app without XCode
 
-Usare `codesign` per app, bundle, plugin e `productsign` per pkg.
+Use `codesign` for app, bundle, plugin or `productsign` for pkg.
 
 > codesign -s "Developer ID Application: FATAR SRL (9L4T4JL6GX)" "/path_to_app.app" --timestamp  
 productsign --sign "eveloper ID Installer: FATAR SRL (9L4T4JL6GX)" ./installer.pkg ./installer_signed.pkg
 
-### Verifica della firma
+### Verify the signature
 
-Usare `codesign` per app, bundle, plugin e `pkgutil` per pkg.  
-Assicurarsi che venga specificato il Developer ID altrimenti la notarizzazione non andrà a buon fine.
+Use `codesign` for app, bundle, plugin or `pkgutil` for pkg.  
+Make sure that command response includes the Developer ID, otherwise the notarization will fail.
 
 > codesign — verify — verbose /Applications/AppName.app  
 pkgutil --check-signature ./installer_signed.pkg
 
-## Inviare la richiesta di notarizzazione
+## Send the notarization request
 
-### Tramite XCode
+### Via XCode
 
-Dopo aver *Archiviato* un build, premere validate e seguire le istruzioni in base al metodo di distribuzione scelto.
+After *archiving* the build, press **Validate** and follow the procedure according to the chosen distribution method.
 
-### Manualmente
+### Manually
 
-> xcrun altool --notarize-app --primary-bundle-id "com.yourcompany.app" -u "info@fatar.com -p "tozc-tzoo-smqj-wybr" -f "/full/path/to/the/installer_signed.pkg"
+> xcrun altool --notarize-app --primary-bundle-id "com.yourcompany.app" -u "myemail@mycompany.com" -p "specific_passowrd" -f "/full/path/to/the/installer_signed.pkg"
 
-Se non ci sono errori durante l'upload verrà restituito l'ID della richiesta.  
-E' possibile monitorare lo stato della singola richiesta oppure mostrare l'intera cronologia:
+If there are no upload error, the command returns a request ID like `85b5e831-3fa0-4082-8ec8-d564d69869ef`.  
+You can check a specific request status or see the history of all requests:
 
-> xcrun altool --notarization-info 85b5e831-3fa0-4082-8ec8-d564d69869ef -u "info@fatar.com" -p "tozc-tzoo-smqj-wybr"  
-xcrun altool --notarization-history 0 -u "info@fatar.com" -p "tozc-tzoo-smqj-wybr"
+> xcrun altool --notarization-info 85b5e831-3fa0-4082-8ec8-d564d69869ef -u "myemail@mycompany.com" -p "specific_passowrd"  
+xcrun altool --notarization-history 0 -u "myemail@mycompany.com" -p "specific_passowrd"
 
 ### Appicciare l'esito della notarizzazione al file
 
