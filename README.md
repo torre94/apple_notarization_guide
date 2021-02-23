@@ -33,7 +33,7 @@ For your [Apple Developer Portal](https://developer.apple.com/) create, download
 
 You can verify that the certificate has been successfully installed with the command:
 
-> security find-identity -v
+  security find-identity -v
 
 ## Signing
 
@@ -49,16 +49,16 @@ For the notarization to be successful, all elements must have a valid developer 
 
 Use `codesign` for app, bundle, plugin or `productsign` for pkg.
 
-> codesign -s "Developer ID Application: FATAR SRL (9L4T4JL6GX)" "/path_to_app.app" --timestamp  
-productsign --sign "eveloper ID Installer: FATAR SRL (9L4T4JL6GX)" ./installer.pkg ./installer_signed.pkg
+  codesign -s "Developer ID Application: FATAR SRL (9L4T4JL6GX)" "/path_to_app.app" --timestamp  
+  productsign --sign "eveloper ID Installer: FATAR SRL (9L4T4JL6GX)" ./installer.pkg ./installer_signed.pkg
 
 ### Verify the signature
 
 Use `codesign` for app, bundle, plugin or `pkgutil` for pkg.  
 Make sure that command response includes the Developer ID, otherwise the notarization will fail.
 
-> codesign — verify — verbose /Applications/AppName.app  
-pkgutil --check-signature ./installer_signed.pkg
+  codesign — verify — verbose /Applications/AppName.app  
+  pkgutil --check-signature ./installer_signed.pkg
 
 ## Send the notarization request
 
@@ -68,51 +68,54 @@ After *archiving* the build, press **Validate** and follow the procedure accordi
 
 ### Manually
 
-> xcrun altool --notarize-app --primary-bundle-id "com.yourcompany.app" -u "myemail@mycompany.com" -p "specific_passowrd" -f "/full/path/to/the/installer_signed.pkg"
+  xcrun altool --notarize-app --primary-bundle-id "com.yourcompany.app" -u "myemail@mycompany.com" -p "specific_passowrd" -f "/full/path/to/the/installer_signed.pkg"
 
 If there are no upload error, the command returns a request ID like `85b5e831-3fa0-4082-8ec8-d564d69869ef`.  
 You can check a specific request status or see the history of all requests:
 
-> xcrun altool --notarization-info 85b5e831-3fa0-4082-8ec8-d564d69869ef -u "myemail@mycompany.com" -p "specific_passowrd"  
+  xcrun altool --notarization-info 85b5e831-3fa0-4082-8ec8-d564d69869ef -u "myemail@mycompany.com" -p "specific_passowrd"  
 xcrun altool --notarization-history 0 -u "myemail@mycompany.com" -p "specific_passowrd"
 
 ### Appicciare l'esito della notarizzazione al file
 
-Questo passaggio è opzionare ma raccomandato perchè contente la verifica di Gatekeeper anche offline.
+This step is optional but recommended because it allows offline verification by Gatekeeper.
 
-> xcrun stapler staple "/full/path/to/myapp.app"
-> Processing: /full/path/to/myapp.app
-The staple and validate action worked!
+  $ xcrun stapler staple "/full/path/to/myapp.app"
+  Processing: /full/path/to/myapp.app
+  The staple and validate action worked!
 
-## Controllare notarization in file
+## Check notorization in file
 
-E possibile controllare se un file é notorizzato in diversi modi.
+There are several ways to check if a file is notarized. Here are my favorites:
 
 ### spctl
 
-> $ spctl -a -vvv -t exec /Path/To/Notarised.app  
-/Path/To/Notarised.app: accepted  
-source=Notarized Developer ID  
-origin=Developer ID Application: ***
+  spctl -a -vvv -t exec /Path/To/Notarised.app  
+  /Path/To/Notarised.app: accepted  
+  source=Notarized Developer ID  
+  origin=Developer ID Application: ***
 
-Sostituire `exec` con `install` per i **pkg**.
+Replace `exec` with `install` for **pkg**.
 
-(`spctl` consente anche di aggiungere, rimuovere, visualizzare gli sviluppatori autorizzati nel sistema)
+(`spctl` also allows to add, remove and list the allowed developer in the system)
 
 ### stapler
 
-> $ stapler validate myfile.pkg  
-Processing: myfile.pkg  
-The validate action worked!
+  stapler validate myfile.pkg  
+  Processing: myfile.pkg  
+  The validate action worked!
 
 ### Extra 1: Packages
 
-[WhiteBox Packages](http://s.sudre.free.fr/Software/Packages/about.htmls) è un strumento grafico per la creazione di pkg.  
-E possibile associare il certificato in Packages per evitare di farlo manualmente con `productsign`.
+[WhiteBox Packages](http://s.sudre.free.fr/Software/Packages/about.htmls) is a GUI tool for making pkg.  
+You can sign a pkg with Packages to avoid use `productsign`.
 
 ![](https://i.imgur.com/xyvfSyK.png)
 ![](https://i.imgur.com/aEkKzOK.png)
 
 ### Extra 2: DMG Canvas
 
-[Araelium DMG Canvas](https://www.araelium.com/dmgcanvas) is GUI tool for making DMG 
+[Araelium DMG Canvas](https://www.araelium.com/dmgcanvas) is GUI tool for making dmg.  
+From the version 3.x it is possible to automate the notarization process while building the dmg, including the stapling too.
+
+![](https://www.davidebarranca.com/wp-content/uploads/2019/05/DMGCanvas.jpg)
