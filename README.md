@@ -108,7 +108,7 @@ Replace `exec` with `install` for **pkg**.
     Processing: myfile.pkg  
     The validate action worked!
 
-### Extra 1: Packages
+## Extra 1: Packages
 
 [WhiteBox Packages](http://s.sudre.free.fr/Software/Packages/about.htmls) is a GUI tool for making pkg.  
 You can sign a pkg with Packages to avoid use `productsign`.
@@ -116,7 +116,7 @@ You can sign a pkg with Packages to avoid use `productsign`.
 ![](https://i.imgur.com/xyvfSyK.png)
 ![](https://i.imgur.com/aEkKzOK.png)
 
-### Extra 2: DMG Canvas
+## Extra 2: DMG Canvas
 
 [Araelium DMG Canvas](https://www.araelium.com/dmgcanvas) is GUI tool for making dmg.  
 From the version 3.x it is possible to automate the notarization process while building the dmg, including the stapling too.
