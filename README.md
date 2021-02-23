@@ -33,7 +33,7 @@ For your [Apple Developer Portal](https://developer.apple.com/) create, download
 
 You can verify that the certificate has been successfully installed with the command:
 
-  security find-identity -v
+    security find-identity -v
 
 ## Signing
 
@@ -49,16 +49,16 @@ For the notarization to be successful, all elements must have a valid developer 
 
 Use `codesign` for app, bundle, plugin or `productsign` for pkg.
 
-  codesign -s "Developer ID Application: FATAR SRL (9L4T4JL6GX)" "/path_to_app.app" --timestamp  
-  productsign --sign "eveloper ID Installer: FATAR SRL (9L4T4JL6GX)" ./installer.pkg ./installer_signed.pkg
+    codesign -s "Developer ID Application: FATAR SRL (9L4T4JL6GX)" "/path_to_app.app" --timestamp  
+    productsign --sign "eveloper ID Installer: FATAR SRL (9L4T4JL6GX)" ./installer.pkg ./installer_signed.pkg
 
 ### Verify the signature
 
 Use `codesign` for app, bundle, plugin or `pkgutil` for pkg.  
 Make sure that command response includes the Developer ID, otherwise the notarization will fail.
 
-  codesign — verify — verbose /Applications/AppName.app  
-  pkgutil --check-signature ./installer_signed.pkg
+    codesign — verify — verbose /Applications/AppName.app  
+    pkgutil --check-signature ./installer_signed.pkg
 
 ## Send the notarization request
 
@@ -68,21 +68,21 @@ After *archiving* the build, press **Validate** and follow the procedure accordi
 
 ### Manually
 
-  xcrun altool --notarize-app --primary-bundle-id "com.yourcompany.app" -u "myemail@mycompany.com" -p "specific_passowrd" -f "/full/path/to/the/installer_signed.pkg"
+    xcrun altool --notarize-app --primary-bundle-id "com.yourcompany.app" -u "myemail@mycompany.com" -p "specific_passowrd" -f "/full/path/to/the/installer_signed.pkg"
 
 If there are no upload error, the command returns a request ID like `85b5e831-3fa0-4082-8ec8-d564d69869ef`.  
 You can check a specific request status or see the history of all requests:
 
-  xcrun altool --notarization-info 85b5e831-3fa0-4082-8ec8-d564d69869ef -u "myemail@mycompany.com" -p "specific_passowrd"  
-xcrun altool --notarization-history 0 -u "myemail@mycompany.com" -p "specific_passowrd"
+    xcrun altool --notarization-info 85b5e831-3fa0-4082-8ec8-d564d69869ef -u "myemail@mycompany.com" -p "specific_passowrd"  
+    xcrun altool --notarization-history 0 -u "myemail@mycompany.com" -p "specific_passowrd"
 
 ### Appicciare l'esito della notarizzazione al file
 
 This step is optional but recommended because it allows offline verification by Gatekeeper.
 
-  $ xcrun stapler staple "/full/path/to/myapp.app"
-  Processing: /full/path/to/myapp.app
-  The staple and validate action worked!
+    $ xcrun stapler staple "/full/path/to/myapp.app"
+    Processing: /full/path/to/myapp.app
+    The staple and validate action worked!
 
 ## Check notorization in file
 
@@ -90,10 +90,10 @@ There are several ways to check if a file is notarized. Here are my favorites:
 
 ### spctl
 
-  spctl -a -vvv -t exec /Path/To/Notarised.app  
-  /Path/To/Notarised.app: accepted  
-  source=Notarized Developer ID  
-  origin=Developer ID Application: ***
+    spctl -a -vvv -t exec /Path/To/Notarised.app  
+    /Path/To/Notarised.app: accepted  
+    source=Notarized Developer ID  
+    origin=Developer ID Application: ***
 
 Replace `exec` with `install` for **pkg**.
 
@@ -101,9 +101,9 @@ Replace `exec` with `install` for **pkg**.
 
 ### stapler
 
-  stapler validate myfile.pkg  
-  Processing: myfile.pkg  
-  The validate action worked!
+    stapler validate myfile.pkg  
+    Processing: myfile.pkg  
+    The validate action worked!
 
 ### Extra 1: Packages
 
