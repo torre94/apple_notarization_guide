@@ -34,6 +34,9 @@ For your [Apple Developer Portal](https://developer.apple.com/) create, download
 You can verify that the certificate has been successfully installed with the command:
 
     security find-identity -v
+    
+    1) 7A7C3D1A28FA54F3E5E8857F2A12EDC71731CAED "Developer ID Application: Davide Barranca (I2WD7PWGD9)"
+    1 valid identities found
 
 ## Signing
 
