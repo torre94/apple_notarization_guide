@@ -79,7 +79,7 @@ You can check a specific request status or see the history of all requests:
     xcrun altool --notarization-info 85b5e831-3fa0-4082-8ec8-d564d69869ef -u "myemail@mycompany.com" -p "specific_passowrd"  
     xcrun altool --notarization-history 0 -u "myemail@mycompany.com" -p "specific_passowrd"
 
-### Appicciare l'esito della notarizzazione al file
+### Staple notarization response to file
 
 This step is optional but recommended because it allows offline verification by Gatekeeper.
 
